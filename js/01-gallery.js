@@ -10,8 +10,7 @@ const createMarkupGallery = array =>
           class="gallery__image"
           src="${preview}"
           data-source="${original}"
-          alt="${description}"
-        />
+          alt="${description}" />
       </a>
     </li>`,
     ).join('');
