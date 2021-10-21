@@ -1,5 +1,6 @@
 import { galleryItems } from './gallery-items.js';
 
+const gallery = document.querySelector('.gallery');
 
 const createMarkupGallery = array =>
   array.map(({ preview, original, description }, i) => `
@@ -15,7 +16,7 @@ const createMarkupGallery = array =>
     </li>`,
     ).join('');
 
-const gallery = document.querySelector('.gallery');
+
 
 const markupGallery = createMarkupGallery(galleryItems);
 gallery.insertAdjacentHTML('beforeend', markupGallery);
