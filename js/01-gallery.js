@@ -1,84 +1,83 @@
 import { galleryItems } from './gallery-items.js';
-// Change code below this line
 
-const galleryListRef = document.querySelector('.js-gallery');
-const lightboxImageRef = document.querySelector('.lightbox__image');
-const lightboxConteinerRef = document.querySelector('.js-lightbox');
 
-function imagesItemTemplate({ preview, original, description }) {
-  return `
-    <li class='gallery__item'>
-    <a class='gallery__link' href='${original}'>
-    <img
-    class='gallery__image'
-    src='${preview}' 
-    data-source='${original}' 
-    alt='${description}'/>
-    </a>
-    </li>`;
+const createMarkupGallery = array =>
+  array.map(({ preview, original, description }, i) => `
+    <li class="gallery__item">
+      <a class="gallery__link" href="${original}">
+        <img
+          id="${'img' + i}"
+          class="gallery__image"
+          src="${preview}"
+          data-source="${original}"
+          alt="${description}"
+        />
+      </a>
+    </li>`,
+    ).join('');
+
+const gallery = document.querySelector('.gallery');
+
+const markupGallery = createMarkupGallery(galleryItems);
+gallery.insertAdjacentHTML('beforeend', markupGallery);
+
+const modalMarkup = `
+<div class="gallery-modal">
+      <img class="gallery-modal__image" src="https://via.placeholder.com/640/480" alt="Description">
+      <p class="gallery-modal__description"><span class="gallery-modal__span">Picture</span></p>
+      <button class="back-btn gallery-modal__btn" type="button">◀</button>
+      <button class="next-btn gallery-modal__btn" type="button">▶</button>
+</div>
+`;
+
+const instance = basicLightbox.create(modalMarkup, {
+  onClose: () => {
+    document.removeEventListener('keydown', onEscCloseModal);
+    backBtn.removeEventListener('click', onBackBtnClickShowPreviousImg);
+    nextBtn.removeEventListener('click', onNextBtnClickShowNextImg);
+  },
+});
+
+const gallModal = instance.element().querySelector('.gallery-modal');
+const startImg = gallModal.firstElementChild;
+const span = gallModal.querySelector('.gallery-modal__span');
+const nextBtn = gallModal.querySelector('.next-btn');
+const backBtn = gallModal.querySelector('.back-btn');
+
+const getSrcForOriginalImg = ({ id, dataset: { source }, alt }) => {
+  if (startImg.id !== id) {
+    startImg.id = id;
+    // console.log('getSrcForOriginalImg ~ id', id);
+    // console.log('getSrcForOriginalImg ~ originalImg.id', originalImg.id);
+  }
+  startImg.src = source;
+  startImg.alt = alt;
+  startImg.classList.add('current-img');
+  span.textContent = alt;
 };
 
-let currentInd = null;
+const onEscCloseModal = e => e.code === 'Escape' && instance.close();
 
-const galleryMarkup = galleryItems.map(imagesItemTemplate);
+const onBackBtnClickShowPreviousImg = e => {
+  const currentImg = document.getElementById(`${startImg.id}`);
+  const previousImg = document.getElementById(`${startImg.id.slice(3) - 1}`);
+  getSrcForOriginalImg(previousImg);
+};
+const onNextBtnClickShowNextImg = e => {};
 
-galleryListRef.insertAdjacentHTML('afterbegin', galleryMarkup.join(''));
-
-galleryListRef.addEventListener('click', onGalleryClick);
-
-function onGalleryClick(e) {
+const onModalOpen = e => {
   e.preventDefault();
   if (e.target.nodeName !== 'IMG') {
     return;
-  };
-  galleryMarkup.forEach((el, ind) => {
-    if (el.includes(e.target.src)) {
-      currentInd = ind;
-    }
-  });
+  }
 
-  lightboxConteinerRef.classList.add('is-open');
-  lightboxImageRef.src = e.target.dataset.source;
-  lightboxImageRef.alt = e.target.alt;
+  const previewImg = e.target;
+  getSrcForOriginalImg(previewImg);
+  instance.show();
+
+  window.addEventListener('keydown', onEscCloseModal);
+  backBtn.addEventListener('click', onBackBtnClickShowPreviousImg);
+  nextBtn.addEventListener('click', onNextBtnClickShowNextImg);
 };
 
-function onModalClose(e) {
-  lightboxConteinerRef.classList.remove('is-open');
-  lightboxImageRef.src = '';
-  lightboxImageRef.alt = '';
-};
-
-lightboxConteinerRef.addEventListener('click', (e) => {
-  if (e.target.nodeName !== 'IMG') {
-    onModalClose();
-  };
-});
-
-window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    onModalClose();
-  };
-});
-
-window.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowRight' && galleryImages.length - 1 > currentInd) {
-    currentInd += 1;
-    lightboxImageRef.src = galleryImages[currentInd].original;
-    return;
-  }
-  if (e.key === 'ArrowLeft' && 0 < currentInd) {
-    currentInd -= 1;
-    lightboxImageRef.src = galleryImages[currentInd].original;
-    return;
-  }
-  if (e.key === 'ArrowRight' && currentInd === galleryImages.length - 1) {
-    currentInd = 0;
-    lightboxImageRef.src = galleryImages[currentInd].original;
-  }
-  if (e.key === 'ArrowLeft' && currentInd === 0) {
-    currentInd = galleryImages.length - 1;
-    lightboxImageRef.src = galleryImages[currentInd].original;
-  }
-});
-
-console.log(galleryItems);
+gallery.addEventListener('click', onModalOpen);
