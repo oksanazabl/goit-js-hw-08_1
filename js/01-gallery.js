@@ -31,37 +31,36 @@ const modalMarkup = `
 const instance = basicLightbox.create(modalMarkup, {
   onClose: () => {
     document.removeEventListener('keydown', onEscCloseModal);
-    backBtn.removeEventListener('click', onBackBtnClickShowPreviousImg);
-    nextBtn.removeEventListener('click', onNextBtnClickShowNextImg);
+    backBtn.removeEventListener('click', onBackBtnClickBeforeImgView);
+    nextBtn.removeEventListener('click', onNextBtnClicknextImgView);
   },
 });
 
 const gallModal = instance.element().querySelector('.gallery-modal');
 const startImg = gallModal.firstElementChild;
-const span = gallModal.querySelector('.gallery-modal__span');
+
 const nextBtn = gallModal.querySelector('.next-btn');
 const backBtn = gallModal.querySelector('.back-btn');
+const modalSpan = gallModal.querySelector('.gallery-modal__span');
 
-const getSrcForOriginalImg = ({ id, dataset: { source }, alt }) => {
+const getSrcForOriginalImage = ({ id, dataset: { source }, alt }) => {
   if (startImg.id !== id) {
     startImg.id = id;
-    // console.log('getSrcForOriginalImg ~ id', id);
-    // console.log('getSrcForOriginalImg ~ originalImg.id', originalImg.id);
   }
   startImg.src = source;
   startImg.alt = alt;
   startImg.classList.add('current-img');
-  span.textContent = alt;
+  modalSpan.textContent = alt;
 };
 
 const onEscCloseModal = e => e.code === 'Escape' && instance.close();
 
-const onBackBtnClickShowPreviousImg = e => {
+const onBackBtnClickBeforeImgView = e => {
   const currentImg = document.getElementById(`${startImg.id}`);
-  const previousImg = document.getElementById(`${startImg.id.slice(3) - 1}`);
-  getSrcForOriginalImg(previousImg);
+  const prevImg = document.getElementById(`${startImg.id.slice(3) - 1}`);
+  getSrcForOriginalImage(prevImg);
 };
-const onNextBtnClickShowNextImg = e => {};
+const onNextBtnClicknextImgView = e => {};
 
 const onModalOpen = e => {
   e.preventDefault();
@@ -70,12 +69,13 @@ const onModalOpen = e => {
   }
 
   const previewImg = e.target;
-  getSrcForOriginalImg(previewImg);
+  getSrcForOriginalImage(previewImg);
   instance.show();
 
   window.addEventListener('keydown', onEscCloseModal);
-  backBtn.addEventListener('click', onBackBtnClickShowPreviousImg);
-  nextBtn.addEventListener('click', onNextBtnClickShowNextImg);
+  nextBtn.addEventListener('click', onNextBtnClicknextImgView);
+  backBtn.addEventListener('click', onBackBtnClickBeforeImgView);
+  
 };
 
 gallery.addEventListener('click', onModalOpen);
