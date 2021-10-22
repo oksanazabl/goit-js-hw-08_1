@@ -12,7 +12,7 @@ return `<a class="gallery__item" href="${original}">
 const createGalleryMarkup = galleryItems.map(imagesItemTemplate);
 gallery.insertAdjacentHTML('beforeend', createGalleryMarkup .join(''));
 
-const lightbox = new SimpleLightbox('.gallery a', {
+const lightbox = new lightboxSimpl('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
 });
