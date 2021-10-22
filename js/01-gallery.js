@@ -2,24 +2,22 @@ import { galleryItems } from './gallery-items.js';
 
 const gallery = document.querySelector('.gallery');
 
-const createMarkupGallery = array =>
-  array.map(({ preview, original, description }, i) => `
-    <li class="gallery__item">
-      <a class="gallery__link" href="${original}">
-        <img
-          id="${'img' + i}"
-          class="gallery__image"
-          src="${preview}"
-          data-source="${original}"
-          alt="${description}" />
-      </a>
-    </li>`,
-    ).join('');
 
-
-
-const markupGallery = createMarkupGallery(galleryItems);
-gallery.insertAdjacentHTML('beforeend', markupGallery);
+function imagesItemTemplate({ preview, original, description }) {
+return `
+    <li class='gallery__item'>
+    <a class='gallery__link' href='${original}'>
+    <img
+    class='gallery__image'
+    src='${preview}' 
+    data-source='${original}' 
+    alt='${description}'/>
+    </a>
+    </li>`
+};
+    
+const createGalleryMarkup = galleryItems.map(imagesItemTemplate);
+gallery.insertAdjacentHTML('beforeend', createGalleryMarkup .join(''));
 
 const modalMarkup = `
 <div class="gallery-modal">
