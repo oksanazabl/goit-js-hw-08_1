@@ -19,7 +19,7 @@ return `
 const createGalleryMarkup = galleryItems.map(imagesItemTemplate);
 gallery.insertAdjacentHTML('beforeend', createGalleryMarkup .join(''));
 
-const modalMarkup = `
+const newLocal = `
 <div class="gallery-modal">
       <img class="gallery-modal__image" src="https://via.placeholder.com/640/480" alt="Description">
       <p class="gallery-modal__description"><span class="gallery-modal__span">Picture</span></p>
@@ -27,10 +27,11 @@ const modalMarkup = `
       <button class="next-btn gallery-modal__btn" type="button">▶</button>
 </div>
 `;
+const modalMarkup = newLocal;
 
 const instance = basicLightbox.create(modalMarkup, {
   onClose: () => {
-    document.removeEventListener('keydown', onEscCloseModal);
+    window.removeEventListener('keydown', onEscCloseModal);
     backBtn.removeEventListener('click', onBackBtnClickBeforeImgView);
     nextBtn.removeEventListener('click', onNextBtnClicknextImgView);
   },
