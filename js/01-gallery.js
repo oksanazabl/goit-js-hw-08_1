@@ -23,8 +23,8 @@ const newLocal = `
 <div class="gallery-modal">
       <img class="gallery-modal__image" src="https://via.placeholder.com/640/480" alt="Description">
       <p class="gallery-modal__description"><span class="gallery-modal__span">Picture</span></p>
-      <button class="back-btn gallery-modal__btn" type="button">◀</button>
-      <button class="next-btn gallery-modal__btn" type="button">▶</button>
+      <button class="back-btn gallery-modal__btn" type="button"> </button>
+      <button class="next-btn gallery-modal__btn" type="button"> </button>
 </div>
 `;
 const modalMarkup = newLocal;
